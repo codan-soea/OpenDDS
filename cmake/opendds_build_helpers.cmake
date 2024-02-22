@@ -28,6 +28,7 @@ function(_opendds_library target)
     "${no_value_options}" "${single_value_options}" "${multi_value_options}" ${ARGN})
 
   _opendds_alias(${target})
+  _opendds_target_compile_features(${target} PUBLIC)
 
   if(OPENDDS_CXX_STD)
     target_compile_features(${target} PUBLIC "cxx_std_${OPENDDS_CXX_STD}")
@@ -58,8 +59,8 @@ function(_opendds_library target)
     message(FATAL_ERROR "Target ${target} has unexpected type ${target_type}")
   endif()
 
-  if(MSVC AND arg_MSVC_BIGOBJ)
-    target_compile_options(${target} PRIVATE /bigobj)
+  if(arg_MSVC_BIGOBJ)
+    _opendds_msvc_bigobj(${target})
   endif()
 
   if(NOT arg_NO_INSTALL)
@@ -86,6 +87,7 @@ function(_opendds_executable target)
     "${no_value_options}" "${single_value_options}" "${multi_value_options}" ${ARGN})
 
   _opendds_alias(${target})
+  _opendds_target_compile_features(${target} PRIVATE)
   set_target_properties(${target} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${OPENDDS_BIN_DIR}")
 
   if(OPENDDS_CXX_STD)
