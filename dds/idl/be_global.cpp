@@ -980,6 +980,22 @@ TryConstructFailAction BE_GlobalData::union_discriminator_try_construct(AST_Unio
   return try_construct_annotation->union_value(node);
 }
 
+#if OPENDDS_HAS_IDL_MAP
+TryConstructFailAction BE_GlobalData::map_key_try_construct(AST_Map* node)
+{
+  TryConstructAnnotation* try_construct_annotation =
+    dynamic_cast<TryConstructAnnotation*>(builtin_annotations_["::@try_construct"]);
+  return try_construct_annotation->map_key(node);
+}
+
+TryConstructFailAction BE_GlobalData::map_value_try_construct(AST_Map* node)
+{
+  TryConstructAnnotation* try_construct_annotation =
+    dynamic_cast<TryConstructAnnotation*>(builtin_annotations_["::@try_construct"]);
+  return try_construct_annotation->map_value(node);
+}
+#endif
+
 OpenDDS::DataRepresentation BE_GlobalData::data_representations(
   AST_Decl* node) const
 {

@@ -236,6 +236,11 @@ public:
   TryConstructFailAction array_element_try_construct(AST_Array* node);
   TryConstructFailAction union_discriminator_try_construct(AST_Union* node);
 
+#if OPENDDS_HAS_IDL_MAP
+  TryConstructFailAction map_key_try_construct(AST_Map* node);
+  TryConstructFailAction map_value_try_construct(AST_Map* node);
+#endif
+
   OpenDDS::DataRepresentation data_representations(AST_Decl* node) const;
 
   OpenDDS::XTypes::MemberId compute_id(AST_Structure* stru, AST_Field* field, AutoidKind auto_id,

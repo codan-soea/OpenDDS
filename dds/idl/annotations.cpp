@@ -8,6 +8,9 @@
 #include <ast_annotation_member.h>
 #include <ast_sequence.h>
 #include <ast_array.h>
+#if OPENDDS_HAS_IDL_MAP
+#include <ast_map.h>
+#endif
 #include <ast_union.h>
 #include <utl_string.h>
 
@@ -428,6 +431,22 @@ TryConstructFailAction TryConstructAnnotation::union_value(AST_Union* node) cons
   if (!appl) { return absent_value; }
   return value_from_appl(appl);
 }
+
+#if OPENDDS_HAS_IDL_MAP
+TryConstructFailAction TryConstructAnnotation::map_key(AST_Map* node) const
+{
+  AST_Annotation_Appl* appl = node->key_type_annotations().find(declaration());
+  if (!appl) { return absent_value; }
+  return value_from_appl(appl);
+}
+
+TryConstructFailAction TryConstructAnnotation::map_value(AST_Map* node) const
+{
+  AST_Annotation_Appl* appl = node->value_type_annotations().find(declaration());
+  if (!appl) { return absent_value; }
+  return value_from_appl(appl);
+}
+#endif
 
 OPENDDS_BEGIN_VERSIONED_NAMESPACE_DECL
 namespace OpenDDS {

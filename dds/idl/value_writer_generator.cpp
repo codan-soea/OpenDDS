@@ -175,6 +175,33 @@ namespace {
       indent << "}\n";
   }
 
+#if OPENDDS_HAS_IDL_MAP
+  void map_helper(const std::string& expression, AST_Map* map, const std::string& idx, int level)
+  {
+    // const bool use_cxx11 = be_global->language_mapping() == BE_GlobalData::LANGMAP_CXX11;
+    const std::string indent(level * 2, ' ');
+    be_global->impl_ << indent << "value_writer.begin_map();\n";
+
+
+    be_global->impl_ <<
+        indent << "for (auto "<< idx << " = " <<  expression << ".begin(); " << idx << " != " << expression << ".end(); ++" << idx << ") {\n" <<
+        indent << "  value_writer.begin_pair();\n" <<
+        indent << "  value_writer.write_key();\n";
+    generate_write(idx + "->first", map->key_type(), idx + "i", level + 1);
+
+    be_global->impl_ <<
+        indent << "  value_writer.write_value();\n";
+
+    generate_write(idx + "->second", map->value_type(), idx + "i", level + 1);
+    be_global->impl_ <<
+      indent << "  value_writer.end_pair();\n";
+
+    be_global->impl_ <<
+      indent << "}\n" <<
+      indent << "value_writer.end_map();\n";
+  }
+#endif
+
   void generate_write(const std::string& expression, AST_Type* type, const std::string& idx, int level)
   {
     AST_Type* const actual = resolveActualType(type);
@@ -190,6 +217,13 @@ namespace {
       array_helper(expression, array, 0, idx, level);
       return;
     }
+#if OPENDDS_HAS_IDL_MAP
+    if (c & CL_MAP) {
+      AST_Map* const map = dynamic_cast<AST_Map*>(actual);
+      map_helper(expression, map, idx, level);
+      return;
+    }
+#endif
 
     be_global->impl_ << std::string(level * 2, ' ');
 

@@ -33,6 +33,10 @@ list(APPEND CMAKE_PREFIX_PATH "${OPENDDS_SOURCE_DIR}")
 list(APPEND CMAKE_FIND_ROOT_PATH "${OPENDDS_SOURCE_DIR}")
 set(_OPENDDS_CMAKE_DIR "${OPENDDS_SOURCE_DIR}/cmake" CACHE INTERNAL "")
 
+# Temporarily add an address sanatizer for the entire project
+#add_compile_options(-fsanitize=address)
+#add_link_options(-fsanitize=address)
+
 # Get and build ACE/TAO if OPENDDS_ACE wasn't defined and initialize the core
 # of the CMake support in init.cmake.
 if(NOT DEFINED OPENDDS_ACE OR DEFINED ACE_IS_BEING_BUILT)
@@ -195,6 +199,8 @@ if(OPENDDS_BUILD_TESTS)
   add_subdirectory(tests/cmake/idl_compiler_tests)
   add_subdirectory(tests/DCPS/Compiler/optional)
   add_subdirectory(tests/cmake/include_subdir)
+  add_subdirectory(tests/DCPS/Compiler/maps)
+  add_subdirectory(tests/DCPS/Maps)
   add_subdirectory(tests/DCPS/Compiler/char_literals)
   add_subdirectory(tests/DCPS/HelloWorld)
   # TODO: This test always builds shared libraries and linker complains about
